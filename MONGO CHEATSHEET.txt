@@ -1,0 +1,99 @@
+mongosh
+
+show database;
+
+db.createCollection("name")
+
+use coll
+
+if key is in nested object then {"key.key:value"}
+
+db.coll.find({searchKey:V}, {ProjectionKey:true})
+db.coll.find().sort({K:1})
+db.coll.find().count()
+db.coll.find().count().limit(1)
+db.coll.find().skip(1)
+db.coll.distinct("keyname")
+
+db.coll.insertOne({-,-,-})
+db.coll.insertMany([ {}, {}, {} ])
+
+db.coll.find({k:v}) //find all 
+db.coll.find({k:v,-,-})  
+db.coll.find({k:v}, {k:true,-,-})
+db.coll.findOne({-,-}) //it find only one
+
+db.coll.updateOne({k:v}, {$set:{k:v,-,-,-}})
+db.coll.updateMany({k:v}, {$set:{k:v,-,-,-}})
+db.coll.updateMany({}, {$unset:{K:1}})
+
+db.coll.deleteOne({})
+db.coll.deleteMany({})
+
+
+Operators--
+
+db.coll.find({k : {$OPERATOR:v}})
+$gt, $lt, $gte, $lte, $eq, $ne, $and, $or, $not
+$in -> for array of Values [v,v,v]
+
+db.coll.find({K: {$gt:V}})
+db.coll.find({K: {$in:[V,V,V]}})
+db.coll.find([ $and:[ {},{},{} ] ])
+db.coll.find({$and:[ {K:{$gt:V}}, {"K.k":V} ]}) //many OPERATOR
+
+
+
+Indexing--
+
+db.coll.getIndexes()
+db.coll.createCollection({K:1 or -1})
+db.coll.dropIndex("K")
+
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { 'imdb.rating': 1 }, name: 'imdb.rating_1' }
+]
+
+
+Explain()--
+
+db.coll.find({}).explain("executionStats")
+
+important fields :
+winningPlan: {
+      stage: 'COLLSCAN',
+      filter: { 'imdb.rating': { '$eq': 9.1 } },
+      direction: 'forward'
+    },
+nReturned: 4,
+executionTimeMillis: 35,
+totalKeysExamined: 0,
+totalDocsExamined: 23543,
+
+
+Aggregation Pipeline--
+It is a set of stages which perfrom diff operation on every stage to filter  the resulting data.
+it is bases on the concept of Pipeline in which input or data goes thorugh the Pipeline in which each stage is perfrom diff operation to filter the resulting data
+[INPUT] = $match -> $group -> $sort -> $project = [OUTPUT]
+
+operation in Aggregation:
+$sum, $avg, $max, $min, $count, $push
+
+db.coll.aggregate([ {$match}, {$group}, {$sort}, {$project} ])
+
+db.coll.aggregate([ {$match:{K:{$gt:V}}},
+                    {$group:{_id:"$K", total:{$sum:1}}},
+                    {$sort:{K:1 or -1}},
+                    {$project:{K:true,-,-,-}}
+                     ])
+
+In Group {$group:{ _id:"$K", totalAwards:{$sum:"$K"} }}
+Sort w.r.t totalAwards {$sort:{totalAwards:1}}
+
+
+
+
+
+
+
