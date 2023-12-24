@@ -91,6 +91,36 @@ db.coll.aggregate([ {$match:{K:{$gt:V}}},
 In Group {$group:{ _id:"$K", totalAwards:{$sum:"$K"} }}
 Sort w.r.t totalAwards {$sort:{totalAwards:1}}
 
+$lookup used as a JOIN between two documents LIKE book,author
+[
+  {
+    $match: {
+      authorId:{
+        $eq:1
+      }
+    }
+    
+  },
+
+  {
+    $lookup: {
+      from: "author",
+      localField: "authorId",
+      foreignField: "_id",
+      as: "RESULT"
+    }
+  },
+  {
+    $addFields: {
+      RESULT:{
+        $first:"$RESULT"
+      }
+    }
+  }
+
+  
+]
+
 
 
 
