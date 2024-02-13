@@ -118,8 +118,11 @@ $lookup used as a JOIN between two documents LIKE book,author
     }
   }
 
-  
 ]
+
+
+
+populate("key") this method replaces the specified path in the document of one collection with the actual document from the other collection
 
 
 
