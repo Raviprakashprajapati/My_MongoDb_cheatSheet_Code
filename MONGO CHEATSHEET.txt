@@ -34,14 +34,14 @@ db.coll.deleteMany({})
 Operators--
 
 db.coll.find({k : {$OPERATOR:v}})
-$gt, $lt, $gte, $lte, $eq, $ne, $and, $or, $not
+$gt, $lt, $gte, $lte, $eq, $ne, $and, $or, $not, $rename
 $in -> for array of Values [v,v,v]
 
 db.coll.find({K: {$gt:V}})
 db.coll.find({K: {$in:[V,V,V]}})
 db.coll.find([ $and:[ {},{},{} ] ])
 db.coll.find({$and:[ {K:{$gt:V}}, {"K.k":V} ]}) //many OPERATOR
-
+db.coll.find({},{$rename:{key:{newKey}}})
 
 
 Indexing--
