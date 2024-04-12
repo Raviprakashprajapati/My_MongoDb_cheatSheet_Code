@@ -1,12 +1,32 @@
 mongosh
 
-show database;
+use database
+show database
+db.dropdatebase()
 
 db.createCollection("name")
+db.renameCollection("NewName")
+show collections
+db.collName.drop()
 
-use coll
 
-if key is in nested object then {"key.key:value"}
+Nested key{"key.key":value}
+
+***OPERATOR***
+$eq,$ne,,$gt,$gte,$lt,$lte
+$in  : [v,v,v]   if anyone found it reutrn
+$nin : [v,v,v] not from anyone
+
+EX: db.colName.find({key:{$gt:40}})
+
+
+***LOGICAL OPERATOR***
+$or  : [ {cond1}, {cond2} ] if anyone found it reutrn
+$and : [ {cond1}, {cond2} ] it should match all conditions
+$not :
+$nor :
+$all : [v,v,v]  it matches array of values and it should hold all values and no sequene matters
+
 
 db.coll.find({searchKey:V}, {ProjectionKey:true})
 db.coll.find().sort({K:1})
@@ -23,32 +43,76 @@ db.coll.find({k:v,-,-})
 db.coll.find({k:v}, {k:true,-,-})
 db.coll.findOne({-,-}) //it find only one
 
+
+***UPDATE***
+
+(<filter>,<update>,<options>)
+
+upsert: it is a <options> which tells if no document match then we will create new dopcuement of it
+        ({},{},{upsert:true})
+
+UPDATE OPERATOR:
+$set     :  {$set:{k:v}}   it replave values
+$unset   :  {$unset:{K:""}} it remove the fields
+$rename  :  {$rename:{k:"newK"}} it rename the fields(KEY)
+$inc     :  {$inc:{K:number}}
+$mul     :  {$mul:{K:number}}
+$addToSet:  {$addToSet:{k:v}} it add new value in the array 
+
 db.coll.updateOne({k:v}, {$set:{k:v,-,-,-}})
 db.coll.updateMany({k:v}, {$set:{k:v,-,-,-}})
-db.coll.updateMany({}, {$unset:{K:1}})
-
-db.coll.deleteOne({})
-db.coll.deleteMany({})
 
 
-Operators--
+***arrayFilters***
 
-db.coll.find({k : {$OPERATOR:v}})
-$gt, $lt, $gte, $lte, $eq, $ne, $and, $or, $not, $rename
-$in -> for array of Values [v,v,v]
+It is <options> and used to updates an value form the array
 
-db.coll.find({K: {$gt:V}})
-db.coll.find({K: {$in:[V,V,V]}})
-db.coll.find([ $and:[ {},{},{} ] ])
-db.coll.find({$and:[ {K:{$gt:V}}, {"K.k":V} ]}) //many OPERATOR
-db.coll.find({},{$rename:{key:{newKey}}})
+
+waqtu hobbies of ravi from cooking to movies
+updateOne(
+          {name:"ravi"},
+          {$set:{"hobbies.$[i]":"movies"}},
+          {arrayFilters:[{i:"cooking"}]}
+          )
+
+
+***DELETE***
+
+db.coll.deleteOne(<filters>)
+db.coll.deleteMany(<filters>)
+
+***findOneAndDelete***
+
+(<filters>,<sort>)
+it used to find single document and delete it and display deleted dopcuement and it also used to delete  the first docuemtn using sorting
+
+db.colNames.findOneAndDelete({},{sort:{k:1 or 0}})
+
+
+
+***REGEX***
+
+{field: { $regex : /pattern/ } }
+it is used to perfrom pattern matching withing string fields
+we can use 'i' for caseInsensitive
+
+start With Letter(L) : { $regex: /^L/i } 
+Having Letter(L) : { $regex: /L/ }
+ends With Letter(L) : { $regex: /L$/}
+having Letter(L) as specifix index 3 from first : { $regex: /^.{2}L/ }
+having Letter(L) as specifix index 3 from last :  { $regex: /L.{2}$/ }
 
 
 Indexing--
 
+db.colName.createIndex({ K:1, k:1 })
 db.coll.getIndexes()
-db.coll.createCollection({K:1 or -1})
 db.coll.dropIndex("K")
+db.coll.createIndex({key:1},{unique:true}) 
+
+Text Indexs (it are used to enable text search operation and we can used onlt one text search per collection)
+db.colName.createIndex({ K : "text" })
+db.colName.find({ $text : { $search: V} })
 
 [
   { v: 2, key: { _id: 1 }, name: '_id_' },
