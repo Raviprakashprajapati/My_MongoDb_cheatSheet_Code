@@ -139,50 +139,82 @@ totalDocsExamined: 23543,
 Aggregation Pipeline--
 It is a set of stages which perfrom diff operation on every stage to filter  the resulting data.
 it is bases on the concept of Pipeline in which input or data goes thorugh the Pipeline in which each stage is perfrom diff operation to filter the resulting data
-[INPUT] = $match -> $group -> $sort -> $project = [OUTPUT]
+
+db.colName.aggregate([ {}, {} ])
+
+$match   : it used to filter docs  
+           {$match:{cond1}} 
+
+$group   : it group the docs by spiedifc field
+            {$group : { _id: <$fieldName>, <aggreOperation> }} 
+
+$project :  it used to which fields we want to show in the output 
+             {$project:{field : 1 or 0}} 
+
+            We can also change fieldName in the output LIKE
+            {$project: { newName: '$oldName', }}
+
+
+Q:waqt Di no of person present in each gender ?
+
+  ([
+
+      {$group: { _id:"$gender", total:{$sum:1}  } },
+      {$project: { total:1, gender:'$_id', _id:0 } }
+
+   ])
+
+
+
+$push : it return values to the fields
+
+Q: waqtDi name of person in each gender group and also show no of person in each gender
+
+    ([
+      
+      {$group:{ _id:"$gender", count:{$sum:1}, sbakeName:{$push:"$name"} }}
+
+    ])
+
+
 
 operation in Aggregation:
-$sum, $avg, $max, $min, $count, $push
 
-db.coll.aggregate([ {$match}, {$group}, {$sort}, {$project} ])
+$max  : {$group: {_id:null,  MaxAge:{$max:"$age"} }}
+$min  :
+$avg  :
+$sum  :
+$count:
+$push :
+$skip : ([ {$skip:5} ])
+$limit:
+$sort : ([ {$sort:{colName:1}} ])
 
-db.coll.aggregate([ {$match:{K:{$gt:V}}},
-                    {$group:{_id:"$K", total:{$sum:1}}},
-                    {$sort:{K:1 or -1}},
-                    {$project:{K:true,-,-,-}}
-                     ])
 
-In Group {$group:{ _id:"$K", totalAwards:{$sum:"$K"} }}
-Sort w.r.t totalAwards {$sort:{totalAwards:1}}
 
-$lookup used as a JOIN between two documents LIKE book,author
-[
-  {
-    $match: {
-      authorId:{
-        $eq:1
-      }
-    }
-    
-  },
+$unwind : it used to construt an array field form the iput docs and create a separate dpc for each element 
 
-  {
-    $lookup: {
-      from: "author",
-      localField: "authorId",
-      foreignField: "_id",
-      as: "RESULT"
-    }
-  },
-  {
-    $addFields: {
-      RESULT:{
-        $first:"$RESULT"
-      }
-    }
-  }
+([
 
-]
+{$unwind: "$hobbies"}
+{$group:{
+  _id:"$hobbies",
+  count:{$sum:1}
+}}
+
+])
+
+
+Arithmetic ---
+
+$subtract
+$add
+$divide
+$floor
+$round
+$multiply
+
+
 
 
 
